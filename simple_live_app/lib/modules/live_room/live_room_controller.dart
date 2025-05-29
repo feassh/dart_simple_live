@@ -691,7 +691,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
                     launchUrlString("snssdk1128://user/profile/${msg.userId}");
                   } else if (pSite.id == "bilibili") {
                     // launchUrlString("https://space.bilibili.com/${msg.userId}");
-                    launchUrlString("bilibili://user/profile?uid=${msg.userId}");
+                    launchUrlString("bilibili://space/${msg.userId}");
                   } else {
                     SmartDialog.showToast("暂不支持 ${pSite.name} 平台");
                   }
