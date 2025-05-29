@@ -668,6 +668,46 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
     );
   }
 
+  void showDanmakuUserOptionsSheet(LiveMessage msg) {
+    Utils.showBottomSheet(
+        title: msg.userName,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            ListTile(
+              title: const Text("复制用户 ID"),
+              onTap: () {
+                Get.back();
+
+                if (msg.userId.isEmpty) {
+                  return;
+                }
+                Utils.copyToClipboard(msg.userId);
+                SmartDialog.showToast("已复制用户 ID");
+              }),
+            ListTile(
+                title: const Text("官方 APP 打开该用户主页"),
+                onTap: () {
+                  Get.back();
+
+                  if (msg.userId.isEmpty) {
+                    SmartDialog.showToast("暂不支持 ${pSite.name} 平台");
+                    return;
+                  }
+                  if (pSite.id == "douyin") {
+                    launchUrlString("snssdk1128://user/profile/${msg.userId}");
+                  } else if (pSite.id == "bilibili") {
+                    // launchUrlString("https://space.bilibili.com/${msg.userId}");
+                    launchUrlString("bilibili://user/profile?uid=${msg.userId}");
+                  } else {
+                    SmartDialog.showToast("暂不支持 ${pSite.name} 平台");
+                  }
+                })
+          ],
+        )
+    );
+  }
+
   void showPlayUrlsSheet() {
     Utils.showBottomSheet(
       title: "切换线路",
