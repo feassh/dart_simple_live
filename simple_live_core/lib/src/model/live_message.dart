@@ -21,6 +21,9 @@ class LiveMessage {
   /// 用户名
   final String userName;
 
+  /// 用户 ID
+  final String userId;
+
   /// 信息
   final String message;
 
@@ -33,6 +36,7 @@ class LiveMessage {
   LiveMessage({
     required this.type,
     required this.userName,
+    this.userId = "",
     required this.message,
     this.data,
     required this.color,
@@ -43,6 +47,7 @@ class LiveMessage {
     return json.encode({
       "type": type.index,
       "userName": userName,
+      "userID": userId,
       "message": message,
       "data": data.toString(),
       "color": color.toString(),
