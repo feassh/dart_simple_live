@@ -361,7 +361,8 @@ class LiveRoomPage extends GetView<LiveRoomController> {
                 AppStyle.hGap4,
                 Text(
                   Utils.onlineToString(
-                    controller.detail.value?.online ?? 0,
+                    // controller.detail.value?.online ?? 0,
+                    controller.online.value,
                   ),
                   style: const TextStyle(fontSize: 14),
                 ),

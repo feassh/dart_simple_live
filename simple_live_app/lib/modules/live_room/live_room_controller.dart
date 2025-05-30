@@ -686,7 +686,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
                 SmartDialog.showToast("已复制用户 ID");
               }),
             ListTile(
-                title: const Text("官方 APP 打开该用户主页"),
+                title: const Text("使用官方APP浏览该用户主页"),
                 onTap: () {
                   Get.back();
 
