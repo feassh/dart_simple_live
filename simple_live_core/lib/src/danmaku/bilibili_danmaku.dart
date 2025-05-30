@@ -152,17 +152,17 @@ class BiliBiliDanmaku implements LiveDanmaku {
       //内容
       var body = data.skip(16).toList();
       if (operation == 3) {
-        var online = readInt(body, 0, 4);
+        // var online = readInt(body, 0, 4);
 
-        onMessage?.call(
-          LiveMessage(
-            type: LiveMessageType.online,
-            data: online,
-            color: LiveMessageColor.white,
-            message: "",
-            userName: "",
-          ),
-        );
+        // onMessage?.call(
+        //   LiveMessage(
+        //     type: LiveMessageType.online,
+        //     data: online,
+        //     color: LiveMessageColor.white,
+        //     message: "",
+        //     userName: "",
+        //   ),
+        // );
       } else if (operation == 5) {
         if (protocolVersion == 2) {
           body = zlib.decode(body);
@@ -235,6 +235,20 @@ class BiliBiliDanmaku implements LiveDanmaku {
           data: sc,
         );
         onMessage?.call(liveMsg);
+      } else if (cmd == "ONLINE_RANK_COUNT") {
+        if (obj["data"] == null) {
+          return;
+        }
+
+        onMessage?.call(
+          LiveMessage(
+            type: LiveMessageType.online,
+            data: obj["data"]["online_count"],
+            color: LiveMessageColor.white,
+            message: obj["data"]["online_count_text"],
+            userName: "",
+          ),
+        );
       }
     } catch (e) {
       CoreLog.error(e);

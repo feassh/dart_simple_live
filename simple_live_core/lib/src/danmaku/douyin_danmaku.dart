@@ -170,7 +170,7 @@ class DouyinDanmaku implements LiveDanmaku {
     onMessage?.call(
       LiveMessage(
         type: LiveMessageType.online,
-        data: roomUserSeqMessage.totalUser.toInt(),
+        data: int.tryParse(roomUserSeqMessage.onlineUserForAnchor) ?? 0,
         color: LiveMessageColor.white,
         message: "",
         userName: "",
