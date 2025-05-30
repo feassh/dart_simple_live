@@ -159,6 +159,7 @@ class DouyinDanmaku implements LiveDanmaku {
         //     : LiveMessageColor.numberToColor(color),
         message: chatMessage.content,
         userName: chatMessage.user.nickName,
+        userId: chatMessage.user.id.toString(),
       ),
     );
   }
