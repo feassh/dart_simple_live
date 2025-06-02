@@ -307,17 +307,20 @@ class LiveRoomPage extends GetView<LiveRoomController> {
         () => Row(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.grey.withAlpha(50)),
-                borderRadius: AppStyle.radius24,
+            GestureDetector(
+              child: Container(
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.grey.withAlpha(50)),
+                  borderRadius: AppStyle.radius24,
+                ),
+                child: NetImage(
+                  controller.detail.value?.userAvatar ?? "",
+                  width: 48,
+                  height: 48,
+                  borderRadius: 24,
+                ),
               ),
-              child: NetImage(
-                controller.detail.value?.userAvatar ?? "",
-                width: 48,
-                height: 48,
-                borderRadius: 24,
-              ),
+              onTap: () {},
             ),
             AppStyle.hGap12,
             Expanded(
