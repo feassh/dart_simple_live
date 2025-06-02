@@ -691,16 +691,15 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
                   Get.back();
 
                   if (msg.userId.isEmpty) {
-                    SmartDialog.showToast("暂不支持 ${pSite.name} 平台");
+                    SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
                     return;
                   }
-                  if (pSite.id == "douyin") {
+                  if (rxSite.value.id == "douyin") {
                     launchUrlString("snssdk1128://user/profile/${msg.userId}");
-                  } else if (pSite.id == "bilibili") {
-                    // launchUrlString("https://space.bilibili.com/${msg.userId}");
+                  } else if (rxSite.value.id == "bilibili") {
                     launchUrlString("bilibili://space/${msg.userId}");
                   } else {
-                    SmartDialog.showToast("暂不支持 ${pSite.name} 平台");
+                    SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
                   }
                 })
           ],
