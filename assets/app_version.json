@@ -1,7 +1,7 @@
 {
-    "version": "1.0.0",
-    "version_num": 1,
+    "version": "1.0.1",
+    "version_num": 2,
     "version_desc": "- 修复直播间在线人数显示问题\n- 增加查看弹幕用户个人主页功能",
-    "prerelease":false,
+    "prerelease": false,
     "download_url": "https://github.com/feassh/dart_simple_live/releases"
 }
