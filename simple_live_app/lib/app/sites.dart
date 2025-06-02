@@ -10,6 +10,12 @@ class Sites {
       name: "哔哩哔哩",
       liveSite: BiliBiliSite(),
     ),
+    Constant.kDouyin: Site(
+      id: Constant.kDouyin,
+      logo: "assets/images/douyin.png",
+      name: "抖音直播",
+      liveSite: DouyinSite(),
+    ),
     Constant.kDouyu: Site(
       id: Constant.kDouyu,
       logo: "assets/images/douyu.png",
@@ -21,12 +27,6 @@ class Sites {
       logo: "assets/images/huya.png",
       name: "虎牙直播",
       liveSite: HuyaSite(),
-    ),
-    Constant.kDouyin: Site(
-      id: Constant.kDouyin,
-      logo: "assets/images/douyin.png",
-      name: "抖音直播",
-      liveSite: DouyinSite(),
     ),
   };
 
