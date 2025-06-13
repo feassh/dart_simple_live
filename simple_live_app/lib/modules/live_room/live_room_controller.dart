@@ -1043,6 +1043,37 @@ ${error?.stackTrace}''');
     SmartDialog.showToast("已复制错误信息");
   }
 
+
+  void showRankList() async {
+    final res = await site.liveSite.getOnlineUserList(roomId: roomId);
+    if (res == null) {
+      SmartDialog.showToast("在线观众获取失败");
+      return;
+    }
+
+    Utils.showBottomSheet(
+        title: "在线观众",
+        child: ListView.builder(itemBuilder: (context, index) {
+          final item = res['ranks'][index];
+          final user = item['user'];
+          return ListTile(
+            leading: CircleAvatar(
+              backgroundImage: NetworkImage(user['avatar_thumb']['url_list'][0]),
+            ),
+            title: Text(user['nickname']),
+            onTap: () {
+              if (rxSite.value.id == "douyin") {
+                launchUrlString("snssdk1128://user/profile/${user['id_str']}");
+              } else {
+                SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
+              }
+            },
+          );
+        },
+        itemCount: res['ranks'].length)
+    );
+  }
+
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);

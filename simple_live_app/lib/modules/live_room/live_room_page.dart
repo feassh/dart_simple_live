@@ -892,6 +892,15 @@ class LiveRoomPage extends GetView<LiveRoomController> {
                 controller.showDebugInfo();
               },
             ),
+            ListTile(
+              leading: const Icon(Icons.info_outline_rounded),
+              title: const Text("在线观众"),
+              trailing: const Icon(Icons.chevron_right),
+              onTap: () {
+                Get.back();
+                controller.showRankList();
+              },
+            ),
           ],
         ),
       ),
