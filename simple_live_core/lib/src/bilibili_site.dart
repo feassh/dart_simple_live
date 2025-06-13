@@ -607,4 +607,9 @@ class BiliBiliSite implements LiveSite {
     accessId = id ?? "";
     return accessId;
   }
+
+  @override
+  Future<dynamic> getOnlineUserList({required String roomId}) {
+   return Future.value(null);
+  }
 }
