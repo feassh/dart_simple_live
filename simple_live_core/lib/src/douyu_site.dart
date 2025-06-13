@@ -358,6 +358,11 @@ class DouyuSite implements LiveSite {
     //尚不支持
     return Future.value([]);
   }
+
+  @override
+  Future<dynamic> getOnlineUserList({required String roomId}) {
+    return Future.value(null);
+  }
 }
 
 class DouyuPlayData {

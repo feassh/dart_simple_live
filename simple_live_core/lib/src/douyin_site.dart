@@ -690,4 +690,39 @@ class DouyinSite implements LiveSite {
       return url;
     }
   }
+
+  @override
+  Future<dynamic> getOnlineUserList({required String roomId}) async {
+    var r = await getRoomDetail(roomId: roomId);
+    var requestHeader = await getRequestHeaders();
+
+    var uri = Uri.parse("https://live.douyin.com/webcast/ranklist/audience/")
+        .replace(scheme: "https", port: 443, queryParameters: {
+      "aid": "6383",
+      "app_name": "douyin_web",
+      "live_id": "1",
+      "device_platform": "web",
+      "language": "zh-CN",
+      "enter_from": "page_refresh",
+      "cookie_enabled": "true",
+      "screen_width": "1980",
+      "screen_height": "1080",
+      "browser_language": "zh-CN",
+      "browser_platform": "Win32",
+      "browser_name": "Edge",
+      "browser_version": "125.0.0.0",
+      "room_id": r.danmakuData.roomId.toString(),
+      "rank_type": "30",
+      "update_scene": "rank_type_change"
+    });
+
+    var requlestUrl = await getAbogusUrl(uri.toString());
+
+    var result = await HttpClient.instance.getJson(requlestUrl,
+      queryParameters: {},
+      header: requestHeader,
+    );
+
+    return result["data"];
+  }
 }

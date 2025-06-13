@@ -555,4 +555,9 @@ class BiliBiliSite implements LiveSite {
     queryParams["w_rid"] = wbiSign;
     return queryParams;
   }
+
+  @override
+  Future<dynamic> getOnlineUserList({required String roomId}) {
+   return Future.value(null);
+  }
 }
