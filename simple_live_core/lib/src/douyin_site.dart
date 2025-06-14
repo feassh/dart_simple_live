@@ -290,6 +290,7 @@ class DouyinSite implements LiveSite {
           ? asT<int?>(roomData["room_view_stats"]["display_value"]) ?? 0
           : 0,
       status: roomStatus,
+      liveRoomMode: roomData["live_room_mode"] == 3 ? (roomData['basis']['is_customize_audio_room'] == true ? 1 : 3) : roomData["live_room_mode"],
       url: "https://live.douyin.com/$webRid",
       introduction: owner?["signature"]?.toString() ?? "",
       notice: "",
@@ -716,13 +717,53 @@ class DouyinSite implements LiveSite {
       "update_scene": "rank_type_change"
     });
 
-    var requlestUrl = await getAbogusUrl(uri.toString());
+    var requestUrl = await getAbogusUrl(uri.toString());
 
-    var result = await HttpClient.instance.getJson(requlestUrl,
+    var result = await HttpClient.instance.getJson(requestUrl,
       queryParameters: {},
       header: requestHeader,
     );
 
     return result["data"];
+  }
+
+  @override
+  Future getSingerList({required String roomId}) async {
+    var r = await getRoomDetail(roomId: roomId);
+    var requestHeader = await getRequestHeaders();
+
+    // 另一个接口 “order_sing_list_user_microphone” 也可以获取
+    var uri = Uri.parse("https://live.douyin.com/webcast/linkmic_audience/get_play_mode_info/")
+        .replace(scheme: "https", port: 443, queryParameters: {
+      "aid": "6383",
+      "app_name": "douyin_web",
+      "live_id": "1",
+      "device_platform": "web",
+      "language": "zh-CN",
+      "enter_from": "page_refresh",
+      "cookie_enabled": "true",
+      "screen_width": "1980",
+      "screen_height": "1080",
+      "browser_language": "zh-CN",
+      "browser_platform": "Win32",
+      "browser_name": "Edge",
+      "browser_version": "125.0.0.0",
+      "room_id": r.danmakuData.roomId.toString(),
+      "_point": "1",
+      "use_play_mode_info": "true"
+    });
+
+    var requestUrl = await getAbogusUrl(uri.toString());
+
+    var result = await HttpClient.instance.getJson(requestUrl,
+      queryParameters: {},
+      header: requestHeader,
+    );
+
+    try {
+      return result["data"]['linkmic_play_mode_info']['order_sing_info'];
+    } catch (e) {
+      return null;
+    }
   }
 }
