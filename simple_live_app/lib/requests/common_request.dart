@@ -7,9 +7,9 @@ import 'package:simple_live_app/requests/http_client.dart';
 class CommonRequest {
   Future<VersionModel> checkUpdate() async {
     try {
-      return await checkUpdateGitMirror();
-    } catch (e) {
       return await checkUpdateJsDelivr();
+    } catch (e) {
+      return await checkUpdateGitMirror();
     }
   }
 
