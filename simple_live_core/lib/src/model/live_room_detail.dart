@@ -28,6 +28,9 @@ class LiveRoomDetail {
   /// 状态
   final bool status;
 
+  /// 直播模式
+  final int liveRoomMode;
+
   /// 附加信息
   final dynamic data;
 
@@ -53,6 +56,7 @@ class LiveRoomDetail {
     this.introduction,
     this.notice,
     required this.status,
+    this.liveRoomMode = -1,
     this.data,
     this.danmakuData,
     required this.url,
@@ -72,6 +76,7 @@ class LiveRoomDetail {
       "introduction": introduction,
       "notice": notice,
       "status": status,
+      "liveRoomMode": liveRoomMode,
       "data": data.toString(),
       "danmakuData": danmakuData.toString(),
       "url": url,

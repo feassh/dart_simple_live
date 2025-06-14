@@ -91,4 +91,8 @@ class LiveSite {
   Future<dynamic> getOnlineUserList({required String roomId}) {
     return Future.value("");
   }
+
+  Future<dynamic> getSingerList({required String roomId}) {
+    return Future.value(null);
+  }
 }

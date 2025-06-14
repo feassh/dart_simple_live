@@ -578,6 +578,11 @@ class HuyaSite implements LiveSite {
   Future<dynamic> getOnlineUserList({required String roomId}) {
     return Future.value(null);
   }
+
+  @override
+  Future getSingerList({required String roomId}) {
+    return Future.value(null);
+  }
 }
 
 class HuyaUrlDataModel {
