@@ -54,6 +54,10 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   var online = 0.obs;
   var followed = false.obs;
   var liveStatus = false.obs;
+
+  Rx<Map<String, dynamic>?> singerData = Rx(null);
+  bool get singerModeDouyin => site.id == 'douyin' && detail.value?.liveRoomMode == 3;
+
   RxList<LiveSuperChatMessage> superChats = RxList<LiveSuperChatMessage>();
 
   /// 滚动控制
@@ -317,6 +321,9 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       getSuperChatMessage();
 
       addHistory();
+
+      setSingerPanel();
+
       online.value = detail.value!.online;
       liveStatus.value = detail.value!.status || detail.value!.isRecord;
       if (liveStatus.value) {
@@ -337,6 +344,24 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
     } finally {
       SmartDialog.dismiss(status: SmartStatus.loading);
     }
+  }
+
+  void setSingerPanel() async {
+    if (!singerModeDouyin) {
+      return;
+    }
+
+    final data = await site.liveSite.getSingerList(roomId: roomId);
+    if (data == null) {
+      SmartDialog.showToast("歌手数据获取失败");
+      return;
+    }
+    if (data['user_microphone_list'].length == 0) {
+      SmartDialog.showToast("歌手列表为空");
+      return;
+    }
+
+    singerData.value = data;
   }
 
   /// 初始化播放器

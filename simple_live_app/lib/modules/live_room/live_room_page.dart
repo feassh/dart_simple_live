@@ -271,6 +271,63 @@ class LiveRoomPage extends GetView<LiveRoomController> {
           // 自己实现
           wakelock: false,
         ),
+        Obx(() => Visibility(
+            visible: controller.singerModeDouyin,
+            child: Column(
+              children: [
+                AppStyle.vGap12,
+                Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    NetImage(
+                      (controller.singerData.value?['user_microphone_list'][0]['order_user']['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
+                      width: 48,
+                      height: 48,
+                      borderRadius: 24,
+                    ),
+                    AppStyle.vGap4,
+                    Text(
+                      controller.singerData.value?['user_microphone_list'][0]['order_user']['nickname'] ?? '',
+                      style: const TextStyle(color: Colors.white),
+                      maxLines: 1,
+                      overflow: TextOverflow.ellipsis,
+                    )
+                  ],
+                ),
+                AppStyle.vGap12,
+                Expanded(
+                  child: GridView.builder(
+                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        crossAxisCount: 4,        // 每行显示的列数
+                        mainAxisSpacing: 6,    // 主轴（纵向）间距
+                        crossAxisSpacing: 10.0,   // 交叉轴（横向）间距
+                        childAspectRatio: (((MediaQuery.of(Get.context!).orientation == Orientation.portrait ? Get.width : Get.height) / 4) - 30) / 48,    // 子项的宽高比
+                      ),
+                      itemCount: ((controller.singerData.value?['user_microphone_list'] as List?)?.length ?? 1) - 1,
+                      itemBuilder: (context, index) {
+                        return Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            NetImage(
+                              (controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
+                              width: 36,
+                              height: 36,
+                              borderRadius: 24,
+                            ),
+                            AppStyle.vGap4,
+                            Text(
+                              controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['nickname'] ?? '',
+                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          ],
+                        );
+                      }),
+                ),
+              ],
+            )
+        )),
         Obx(
           () => Visibility(
             visible: !controller.liveStatus.value,
