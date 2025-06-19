@@ -346,22 +346,23 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
     }
   }
 
-  void setSingerPanel() async {
+  Future<bool> setSingerPanel() async {
     if (!singerModeDouyin) {
-      return;
+      return false;
     }
 
     final data = await site.liveSite.getSingerList(roomId: roomId);
     if (data == null) {
       SmartDialog.showToast("歌手数据获取失败");
-      return;
+      return false;
     }
     if (data['user_microphone_list'].length == 0) {
       SmartDialog.showToast("歌手列表为空");
-      return;
+      return false;
     }
 
     singerData.value = data;
+    return true;
   }
 
   /// 初始化播放器
@@ -693,9 +694,9 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
     );
   }
 
-  void showDanmakuUserOptionsSheet(LiveMessage msg) {
+  void showDanmakuUserOptionsSheet(String name, String id) {
     Utils.showBottomSheet(
-        title: msg.userName,
+        title: name,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -704,10 +705,10 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
               onTap: () {
                 Get.back();
 
-                if (msg.userId.isEmpty) {
+                if (id.isEmpty) {
                   return;
                 }
-                Utils.copyToClipboard(msg.userId);
+                Utils.copyToClipboard(id);
                 SmartDialog.showToast("已复制用户 ID");
               }),
             ListTile(
@@ -715,14 +716,14 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
                 onTap: () {
                   Get.back();
 
-                  if (msg.userId.isEmpty) {
+                  if (id.isEmpty) {
                     SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
                     return;
                   }
                   if (rxSite.value.id == "douyin") {
-                    launchUrlString("snssdk1128://user/profile/${msg.userId}");
+                    launchUrlString("snssdk1128://user/profile/$id");
                   } else if (rxSite.value.id == "bilibili") {
-                    launchUrlString("bilibili://space/${msg.userId}");
+                    launchUrlString("bilibili://space/$id");
                   } else {
                     SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
                   }

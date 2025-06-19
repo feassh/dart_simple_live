@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:floating/floating.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get.dart';
 import 'package:lottie/lottie.dart';
 import 'package:media_kit_video/media_kit_video.dart';
@@ -272,7 +273,7 @@ class LiveRoomPage extends GetView<LiveRoomController> {
           wakelock: false,
         ),
         Obx(() => Visibility(
-            visible: controller.singerModeDouyin,
+            visible: controller.singerModeDouyin && controller.singerData.value != null,
             child: Column(
               children: [
                 AppStyle.vGap12,
@@ -300,28 +301,36 @@ class LiveRoomPage extends GetView<LiveRoomController> {
                       gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 4,        // 每行显示的列数
                         mainAxisSpacing: 6,    // 主轴（纵向）间距
-                        crossAxisSpacing: 10.0,   // 交叉轴（横向）间距
-                        childAspectRatio: (((MediaQuery.of(Get.context!).orientation == Orientation.portrait ? Get.width : Get.height) / 4) - 30) / 48,    // 子项的宽高比
+                        crossAxisSpacing: 0, // 10.0,   // 交叉轴（横向）间距
+                        childAspectRatio: (((MediaQuery.of(Get.context!).orientation == Orientation.portrait ? Get.width : Get.height) / 4) - 30) / (48 + 6),    // 子项的宽高比
                       ),
                       itemCount: ((controller.singerData.value?['user_microphone_list'] as List?)?.length ?? 1) - 1,
                       itemBuilder: (context, index) {
-                        return Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            NetImage(
-                              (controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
-                              width: 36,
-                              height: 36,
-                              borderRadius: 24,
-                            ),
-                            AppStyle.vGap4,
-                            Text(
-                              controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['nickname'] ?? '',
-                              style: const TextStyle(color: Colors.white, fontSize: 12),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            )
-                          ],
+                        final nickname = controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['nickname'] ?? '';
+                        final id = controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['id_str'] ?? '';
+
+                        return GestureDetector(
+                          onTap: () {
+                            controller.showDanmakuUserOptionsSheet(nickname, id);
+                          },
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              NetImage(
+                                (controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
+                                width: 36,
+                                height: 36,
+                                borderRadius: 24,
+                              ),
+                              AppStyle.vGap4,
+                              Text(
+                                nickname,
+                                style: const TextStyle(color: Colors.white, fontSize: 12),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              )
+                            ],
+                          ),
                         );
                       }),
                 ),
@@ -410,23 +419,38 @@ class LiveRoomPage extends GetView<LiveRoomController> {
               ),
             ),
             AppStyle.hGap12,
-            Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const Icon(
-                  Remix.fire_fill,
-                  size: 20,
-                  color: Colors.orange,
-                ),
-                AppStyle.hGap4,
-                Text(
-                  Utils.onlineToString(
-                    // controller.detail.value?.online ?? 0,
-                    controller.online.value,
+            if (controller.singerModeDouyin && controller.singerData.value != null)
+              InkWell(
+                child: const Padding(padding: AppStyle.edgeInsetsH8, child: Text('刷新')),
+                onTap: () async {
+                  final success = await controller.setSingerPanel();
+                  if (success) {
+                    SmartDialog.showToast('歌手列表刷新成功');
+                  } else {
+                    SmartDialog.showToast('歌手列表刷新失败');
+                  }
+                },
+              ),
+            GestureDetector(
+              onTap: controller.showRankList,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const Icon(
+                    Remix.fire_fill,
+                    size: 20,
+                    color: Colors.orange,
                   ),
-                  style: const TextStyle(fontSize: 14),
-                ),
-              ],
+                  AppStyle.hGap4,
+                  Text(
+                    Utils.onlineToString(
+                      // controller.detail.value?.online ?? 0,
+                      controller.online.value,
+                    ),
+                    style: const TextStyle(fontSize: 14),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
@@ -655,7 +679,7 @@ class LiveRoomPage extends GetView<LiveRoomController> {
         ),
       ),
       onTap: () {
-        controller.showDanmakuUserOptionsSheet(message);
+        controller.showDanmakuUserOptionsSheet(message.userName, message.userId);
       },
     );
   }
@@ -947,15 +971,6 @@ class LiveRoomPage extends GetView<LiveRoomController> {
               onTap: () {
                 Get.back();
                 controller.showDebugInfo();
-              },
-            ),
-            ListTile(
-              leading: const Icon(Icons.info_outline_rounded),
-              title: const Text("在线观众"),
-              trailing: const Icon(Icons.chevron_right),
-              onTap: () {
-                Get.back();
-                controller.showRankList();
               },
             ),
           ],
