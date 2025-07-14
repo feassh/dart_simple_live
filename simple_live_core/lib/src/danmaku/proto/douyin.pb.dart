@@ -10,9 +10,9 @@ import 'dart:core' as $core;
 import 'package:fixnum/fixnum.dart' as $fixnum;
 import 'package:protobuf/protobuf.dart' as $pb;
 
-import 'lib/src/danmaku/proto/douyin.pbenum.dart';
+import 'douyin.pbenum.dart';
 
-export 'lib/src/danmaku/proto/douyin.pbenum.dart';
+export 'douyin.pbenum.dart';
 
 class Response extends $pb.GeneratedMessage {
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'Response', package: const $pb.PackageName(const $core.bool.fromEnvironment('protobuf.omit_message_names') ? '' : 'douyin'), createEmptyInstance: create)

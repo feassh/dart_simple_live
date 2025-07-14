@@ -12,6 +12,7 @@ dependencies:
   web_socket_channel: ^3.0.1
   html_unescape: ^2.0.0
   protobuf: ^3.1.0
+#  protobuf: ^4.1.0 # dart pub global activate protoc_plugin 20.0.1
   crypto: ^3.0.3
   brotli: ^0.6.0
   tars_dart:
