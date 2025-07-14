@@ -56,6 +56,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   var liveStatus = false.obs;
 
   Rx<Map<String, dynamic>?> singerData = Rx(null);
+  Rx<List?> singerMicStatus = Rx(null);
   bool get singerModeDouyin => site.id == 'douyin' && detail.value?.liveRoomMode == 3;
 
   RxList<LiveSuperChatMessage> superChats = RxList<LiveSuperChatMessage>();
@@ -256,6 +257,8 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       online.value = msg.data;
     } else if (msg.type == LiveMessageType.superChat) {
       superChats.add(msg.data);
+    } else if (msg.type == LiveMessageType.singerMicStatus) {
+      singerMicStatus.value = msg.data;
     }
   }
 
@@ -356,7 +359,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       SmartDialog.showToast("歌手数据获取失败");
       return false;
     }
-    if (data['user_microphone_list'].length == 0) {
+    if (data['user'].length == 0) {
       SmartDialog.showToast("歌手列表为空");
       return false;
     }
