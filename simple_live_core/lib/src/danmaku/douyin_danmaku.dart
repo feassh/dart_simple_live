@@ -126,6 +126,10 @@ class DouyinDanmaku implements LiveDanmaku {
     webScoketUtils?.sendMessage(obj.writeToBuffer());
   }
 
+  // WebcastLinkmicPlaymodeMessage
+  // WebcastLinkmicAsrSummaryMessage
+  // WebcastBackupSEIMessage
+  // r.webcast.im.LinkmicPlaymode
   void decodeMessage(args) {
     // CoreLog.i(args.toString());
 
@@ -143,6 +147,55 @@ class DouyinDanmaku implements LiveDanmaku {
         unPackWebcastChatMessage(msg.payload);
       } else if (msg.method == 'WebcastRoomUserSeqMessage') {
         unPackWebcastRoomUserSeqMessage(msg.payload);
+      } else if (msg.method == 'WebcastBackupSEIMessage') {
+        final dataList = json.decode(BackupSEIMessage.fromBuffer(msg.payload).seiData) as List;
+        // for (var data in dataList) {
+        //   final keyList = data['sei_key_list'];
+        //   if (!keyList.contains('audio_subtitle')) {
+        //     continue;
+        //   }
+        //
+        //   final sei = jsonDecode(data['sei']);
+        //   final titles = sei['audio_subtitle']['subtitles'];
+        //   var title = '';
+        //   for (var value in titles) {
+        //     title += value['text'];
+        //   }
+        //   print(title);
+        // }
+
+        // final data = dataList.lastOrNull;
+        // if (data == null) {
+        //   continue;
+        // }
+        // final keyList = data['sei_key_list'];
+        // if (keyList.contains('audio_subtitle')) {
+        //   final sei = jsonDecode(data['sei']);
+        //   final titles = sei['audio_subtitle']['subtitles'];
+        //   for (var value in titles) {
+        //     print(value['userId'] + ': ' + value['text']);
+        //   }
+        // }
+
+        final data = dataList.lastOrNull;
+        if (data == null) {
+          continue;
+        }
+        final sei = jsonDecode(data['sei']);
+        if (sei['app_data'] == null) {
+          continue;
+        }
+        final appData = jsonDecode(sei['app_data']);
+        // {\"uid_str\":\"1_83394907ccef5a381c9972d175ab9821\",\"account\":null,\"p\":0,\"type\":1,\"talk\":0}
+        onMessage?.call(
+          LiveMessage(
+            type: LiveMessageType.singerMicStatus,
+            data: appData['grids'],
+            color: LiveMessageColor.white,
+            message: "",
+            userName: "",
+          ),
+        );
       }
     }
   }

@@ -12,6 +12,9 @@ enum LiveMessageType {
 
   /// 醒目留言
   superChat,
+
+  /// 抖音 音乐厅 讲话状态
+  singerMicStatus
 }
 
 class LiveMessage {

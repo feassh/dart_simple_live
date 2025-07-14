@@ -732,8 +732,7 @@ class DouyinSite implements LiveSite {
     var r = await getRoomDetail(roomId: roomId);
     var requestHeader = await getRequestHeaders();
 
-    // 另一个接口 “order_sing_list_user_microphone” 也可以获取
-    var uri = Uri.parse("https://live.douyin.com/webcast/linkmic_audience/get_play_mode_info/")
+    var uri = Uri.parse("https://live.douyin.com/webcast/linkmic_audience/list/v2/")
         .replace(scheme: "https", port: 443, queryParameters: {
       "aid": "6383",
       "app_name": "douyin_web",
@@ -749,8 +748,6 @@ class DouyinSite implements LiveSite {
       "browser_name": "Edge",
       "browser_version": "125.0.0.0",
       "room_id": r.danmakuData.roomId.toString(),
-      "_point": "1",
-      "use_play_mode_info": "true"
     });
 
     var requestUrl = await getAbogusUrl(uri.toString());
@@ -761,9 +758,76 @@ class DouyinSite implements LiveSite {
     );
 
     try {
-      return result["data"]['linkmic_play_mode_info']['order_sing_info'];
+      return result["data"];
     } catch (e) {
       return null;
     }
+
+    // 另一个接口 linkmic_profit/order_sing_list_user_microphone 也可以获取
+    // webcast/linkmic_audience/list/v2
+    // var uri = Uri.parse("https://live.douyin.com/webcast/linkmic_audience/get_play_mode_info/")
+    //     .replace(scheme: "https", port: 443, queryParameters: {
+    //   "aid": "6383",
+    //   "app_name": "douyin_web",
+    //   "live_id": "1",
+    //   "device_platform": "web",
+    //   "language": "zh-CN",
+    //   "enter_from": "page_refresh",
+    //   "cookie_enabled": "true",
+    //   "screen_width": "1980",
+    //   "screen_height": "1080",
+    //   "browser_language": "zh-CN",
+    //   "browser_platform": "Win32",
+    //   "browser_name": "Edge",
+    //   "browser_version": "125.0.0.0",
+    //   "room_id": r.danmakuData.roomId.toString(),
+    //   "_point": "1", // get_play_mode_info
+    //   "use_play_mode_info": "true" // get_play_mode_info
+    //   // "anchor_id": 3393530667741963 // webcast/linkmic_audience/list/v2
+    // });
+    //
+    // var requestUrl = await getAbogusUrl(uri.toString());
+    //
+    // var result = await HttpClient.instance.getJson(requestUrl,
+    //   queryParameters: {},
+    //   header: requestHeader,
+    // );
+    //
+    // try {
+    //   print(result["data"]);
+    //   // get_play_mode_info
+    //   var data = result["data"]['linkmic_play_mode_info']['order_sing_info'];
+    //   if (data == null) {
+    //     // 走到这里的话，应该是直播间开启了 ai 字幕模式
+    //     final newList = [];
+    //     newList.add({
+    //       'order_user': {
+    //         'nickname': r.userName,
+    //         'avatar_thumb': {
+    //           'url_list': [r.userAvatar]
+    //         }
+    //       }
+    //     });
+    //
+    //     final list = result["data"]['linkmic_play_mode_info']['star_wish_info']['player_info'] as List;
+    //     for (var value in list) {
+    //       if (value['user']['nickname'] == r.userName) {
+    //         continue;
+    //       }
+    //
+    //       newList.add({
+    //         'order_user': value['user']
+    //       });
+    //     }
+    //
+    //     data = {
+    //       'user_microphone_list': newList
+    //     };
+    //   }
+    //
+    //   return data;
+    // } catch (e) {
+    //   return null;
+    // }
   }
 }
