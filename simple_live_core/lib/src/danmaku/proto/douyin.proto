@@ -578,3 +578,23 @@ enum CommentTypeTag {
   COMMENTTYPETAGUNKNOWN = 0;
   COMMENTTYPETAGSTAR = 1;
 }
+
+message LinkmicAsrSummaryMessage {
+    Common common = 1;
+    LinkmicAsrSummary summary = 2;
+}
+
+message LinkmicAsrSummary {
+    string summary = 1;
+    int32 qualityLevel = 2;
+    int32 showState = 3;
+    string summaryId = 4;
+    string generateTimeStamp = 5;
+}
+
+message BackupSEIMessage {
+    Common common = 1;
+    string source = 3;
+    string seiData = 4;
+    string streamId = 5;
+}

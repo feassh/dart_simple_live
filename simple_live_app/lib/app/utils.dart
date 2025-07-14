@@ -373,7 +373,7 @@ class Utils {
       int currentVer = Utils.parseVersion(packageInfo.version);
       CommonRequest request = CommonRequest();
       var versionInfo = await request.checkUpdate();
-      if (versionInfo.versionNum > currentVer) {
+      if (Utils.parseVersion(versionInfo.version) > currentVer) {
         Get.dialog(
           AlertDialog(
             title: Text(

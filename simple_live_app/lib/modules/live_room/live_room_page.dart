@@ -272,71 +272,92 @@ class LiveRoomPage extends GetView<LiveRoomController> {
           // 自己实现
           wakelock: false,
         ),
-        Obx(() => Visibility(
-            visible: controller.singerModeDouyin && controller.singerData.value != null,
-            child: Column(
-              children: [
-                AppStyle.vGap12,
-                Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    NetImage(
-                      (controller.singerData.value?['user_microphone_list'][0]['order_user']['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
-                      width: 48,
-                      height: 48,
-                      borderRadius: 24,
-                    ),
-                    AppStyle.vGap4,
-                    Text(
-                      controller.singerData.value?['user_microphone_list'][0]['order_user']['nickname'] ?? '',
-                      style: const TextStyle(color: Colors.white),
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                    )
-                  ],
-                ),
-                AppStyle.vGap12,
-                Expanded(
-                  child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 4,        // 每行显示的列数
-                        mainAxisSpacing: 6,    // 主轴（纵向）间距
-                        crossAxisSpacing: 0, // 10.0,   // 交叉轴（横向）间距
-                        childAspectRatio: (((MediaQuery.of(Get.context!).orientation == Orientation.portrait ? Get.width : Get.height) / 4) - 30) / (48 + 6),    // 子项的宽高比
-                      ),
-                      itemCount: ((controller.singerData.value?['user_microphone_list'] as List?)?.length ?? 1) - 1,
-                      itemBuilder: (context, index) {
-                        final nickname = controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['nickname'] ?? '';
-                        final id = controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['id_str'] ?? '';
+        Obx(() {
+          if (!controller.singerModeDouyin || controller.singerData.value == null) {
+            return Container();
+          }
 
-                        return GestureDetector(
-                          onTap: () {
-                            controller.showDanmakuUserOptionsSheet(nickname, id);
-                          },
-                          child: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              NetImage(
-                                (controller.singerData.value?['user_microphone_list'][index + 1]['order_user']['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
+          // 这行代码为了让 singerMicStatus 更新数据的时候，触发 Obx 绘制
+          controller.singerMicStatus.value == null;
+
+          final singerList = controller.singerData.value!['user'] as List;
+          final singerFirst = singerList.firstWhereOrNull((v) => v['user_position'] == 0)?['user'];
+
+          return Column(
+            children: [
+              AppStyle.vGap12,
+              Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  NetImage(
+                    (singerFirst?['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
+                    width: 48,
+                    height: 48,
+                    borderRadius: 24,
+                  ),
+                  AppStyle.vGap4,
+                  Text(
+                    singerFirst?['nickname'] ?? '',
+                    style: const TextStyle(color: Colors.white),
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                  )
+                ],
+              ),
+              AppStyle.vGap12,
+              Expanded(
+                child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 4,        // 每行显示的列数
+                      mainAxisSpacing: 6,    // 主轴（纵向）间距
+                      crossAxisSpacing: 0, // 10.0,   // 交叉轴（横向）间距
+                      childAspectRatio: (((MediaQuery.of(Get.context!).orientation == Orientation.portrait ? Get.width : Get.height) / 4) - 30) / (48 + 6),    // 子项的宽高比
+                    ),
+                    itemCount: singerList.length - 1,
+                    itemBuilder: (context, index) {
+                      final currentPositionUser = singerList.firstWhereOrNull((v) => v['user_position'] == index + 1);
+                      final currentMicIdStr = currentPositionUser?['linkmic_id_str'];
+                      final currentPositionUserDetail = currentPositionUser?['user'];
+
+                      final nickname = currentPositionUserDetail?['nickname'] ?? '';
+                      final id = currentPositionUserDetail?['id_str'] ?? '';
+
+                      final talk = controller.singerMicStatus.value?.firstWhereOrNull((v) => v['uid_str'] == currentMicIdStr)?['talk'] == 1;
+
+                      return GestureDetector(
+                        onTap: () {
+                          controller.showDanmakuUserOptionsSheet(nickname, id);
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Container(
+                              decoration: BoxDecoration(
+                                border: Border.all(color: Colors.pink, width: talk ? 2 : 0),
+                                borderRadius: AppStyle.radius24,
+                              ),
+                              child: NetImage(
+                                (currentPositionUserDetail?['avatar_thumb']['url_list'] as List?)?.firstOrNull ?? "",
                                 width: 36,
                                 height: 36,
                                 borderRadius: 24,
                               ),
-                              AppStyle.vGap4,
-                              Text(
-                                nickname,
-                                style: const TextStyle(color: Colors.white, fontSize: 12),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              )
-                            ],
-                          ),
-                        );
-                      }),
-                ),
-              ],
-            )
-        )),
+                            ),
+                            AppStyle.vGap4,
+                            Text(
+                              nickname,
+                              style: const TextStyle(color: Colors.white, fontSize: 12),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
+                            )
+                          ],
+                        ),
+                      );
+                    }),
+              ),
+            ],
+          );
+        }),
         Obx(
           () => Visibility(
             visible: !controller.liveStatus.value,
