@@ -1,6 +1,6 @@
 {
-    "version": "1.0.4",
-    "version_num": 5,
+    "version": "1.0.5",
+    "version_num": 6,
     "version_desc": "- 修复直播间在线人数显示问题\n- 增加查看弹幕用户个人主页功能\n- 增加查看在线观众功能\n- 抖音增加多人音频直播间显示歌手列表",
     "prerelease": false,
     "download_url": "https://github.com/feassh/dart_simple_live/releases"
