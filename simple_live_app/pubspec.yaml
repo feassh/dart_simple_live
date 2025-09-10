@@ -39,7 +39,6 @@ dependencies:
       url: https://github.com/xiaoyaocz/flutter_ns_danmaku.git
       tag: v0.0.9
 
-
   #系统交互
   package_info_plus: ^8.3.0 #包信息
   device_info_plus: ^10.1.0 #设备信息
@@ -103,4 +102,3 @@ flutter:
     - assets/images/
     - assets/icons/
     - assets/lotties/
-
