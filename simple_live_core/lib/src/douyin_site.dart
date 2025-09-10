@@ -430,7 +430,7 @@ class DouyinSite implements LiveSite {
       },
     );
 
-    var renderData = RegExp(r'\{\\"state\\":\{\\"isLiveModal.*?\]\\n')
+    var renderData = RegExp(r'\{\\"state\\":\{\\"appStore.*?\]\\n')
             .firstMatch(result)
             ?.group(0) ??
         "";
