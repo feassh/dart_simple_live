@@ -32,6 +32,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   final Site pSite;
   final String pRoomId;
   late LiveDanmaku liveDanmaku;
+
   LiveRoomController({
     required this.pSite,
     required this.pRoomId,
@@ -46,8 +47,10 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   }
 
   late Rx<Site> rxSite;
+
   Site get site => rxSite.value;
   late Rx<String> rxRoomId;
+
   String get roomId => rxRoomId.value;
 
   Rx<LiveRoomDetail?> detail = Rx<LiveRoomDetail?>(null);
@@ -57,7 +60,10 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
 
   Rx<Map<String, dynamic>?> singerData = Rx(null);
   Rx<List?> singerMicStatus = Rx(null);
-  bool get singerModeDouyin => site.id == 'douyin' && detail.value?.liveRoomMode == 3;
+
+  bool get singerModeDouyin =>
+      site.id == 'douyin' &&
+      (detail.value?.liveRoomMode == 3 || detail.value?.liveRoomMode == -1);
 
   RxList<LiveSuperChatMessage> superChats = RxList<LiveSuperChatMessage>();
 
@@ -178,6 +184,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
       }
     });
   }
+
   // 弹窗逻辑
 
   void refreshRoom() {
@@ -380,8 +387,14 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
           await site.liveSite.getPlayQualites(detail: detail.value!);
 
       if (playQualites.isEmpty) {
-        SmartDialog.showToast("无法读取播放清晰度");
-        return;
+        // SmartDialog.showToast("无法读取播放清晰度");
+        // return;
+        playQualites = [
+          LivePlayQuality(quality: "QAQ", data: <String>[
+            ...detail.value!.data['flv_pull_url'].values.toList(),
+            ...detail.value!.data['hls_pull_url_map'].values.toList()
+          ])
+        ];
       }
       qualites.value = playQualites;
       var qualityLevel = await getQualityLevel();
@@ -493,6 +506,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
   }
 
   int mediaErrorRetryCount = 0;
+
   @override
   void mediaError(String error) async {
     super.mediaEnd();
@@ -706,16 +720,16 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             ListTile(
-              title: const Text("复制用户 ID"),
-              onTap: () {
-                Get.back();
+                title: const Text("复制用户 ID"),
+                onTap: () {
+                  Get.back();
 
-                if (id.isEmpty) {
-                  return;
-                }
-                Utils.copyToClipboard(id);
-                SmartDialog.showToast("已复制用户 ID");
-              }),
+                  if (id.isEmpty) {
+                    return;
+                  }
+                  Utils.copyToClipboard(id);
+                  SmartDialog.showToast("已复制用户 ID");
+                }),
             ListTile(
                 title: const Text("使用官方APP浏览该用户主页"),
                 onTap: () {
@@ -734,8 +748,7 @@ class LiveRoomController extends PlayerController with WidgetsBindingObserver {
                   }
                 })
           ],
-        )
-    );
+        ));
   }
 
   void showPlayUrlsSheet() {
@@ -1081,7 +1094,6 @@ ${error?.stackTrace}''');
     SmartDialog.showToast("已复制错误信息");
   }
 
-
   void showRankList() async {
     final res = await site.liveSite.getOnlineUserList(roomId: roomId);
     if (res == null) {
@@ -1091,25 +1103,27 @@ ${error?.stackTrace}''');
 
     Utils.showBottomSheet(
         title: "在线观众",
-        child: ListView.builder(itemBuilder: (context, index) {
-          final item = res['ranks'][index];
-          final user = item['user'];
-          return ListTile(
-            leading: CircleAvatar(
-              backgroundImage: NetworkImage(user['avatar_thumb']['url_list'][0]),
-            ),
-            title: Text(user['nickname']),
-            onTap: () {
-              if (rxSite.value.id == "douyin") {
-                launchUrlString("snssdk1128://user/profile/${user['id_str']}");
-              } else {
-                SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
-              }
+        child: ListView.builder(
+            itemBuilder: (context, index) {
+              final item = res['ranks'][index];
+              final user = item['user'];
+              return ListTile(
+                leading: CircleAvatar(
+                  backgroundImage:
+                      NetworkImage(user['avatar_thumb']['url_list'][0]),
+                ),
+                title: Text(user['nickname']),
+                onTap: () {
+                  if (rxSite.value.id == "douyin") {
+                    launchUrlString(
+                        "snssdk1128://user/profile/${user['id_str']}");
+                  } else {
+                    SmartDialog.showToast("暂不支持 ${rxSite.value.name} 平台");
+                  }
+                },
+              );
             },
-          );
-        },
-        itemCount: res['ranks'].length)
-    );
+            itemCount: res['ranks'].length));
   }
 
   @override
