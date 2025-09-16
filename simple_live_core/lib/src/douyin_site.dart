@@ -18,7 +18,8 @@ class DouyinSite implements LiveSite {
 
   Future<String> Function(String, String) getAbogusUrl =
       (url, userAgent) async {
-    return "";
+    throw Exception(
+        "You must call setAbogusUrlFunction to set the function first");
   };
 
   void setAbogusUrlFunction(Future<String> Function(String, String) func) {
@@ -27,7 +28,8 @@ class DouyinSite implements LiveSite {
 
   Future<String> Function(String, String) getSignature =
       (roomId, uniqueId) async {
-    return "";
+    throw Exception(
+        "You must call setSignatureFunction to set the function first");
   };
 
   void setSignatureFunction(Future<String> Function(String, String) func) {
